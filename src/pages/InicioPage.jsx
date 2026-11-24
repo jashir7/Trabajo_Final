@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function Inicio() {
+function InicioPage() {
   return (
     <>
       <section className="inicio" id="inicio">
@@ -28,16 +28,9 @@ function Inicio() {
           este portal.
         </p>
       </section>
-
-      <section id="contacto">
-        <h2>Contacto</h2>
-        <p>
-          Puedes conocer nuestros cursos y registrarte como aprendiz desde
-          este portal.
-        </p>
-      </section>
     </>
   );
 }
 
-export default Inicio;
+export default InicioPage;
+

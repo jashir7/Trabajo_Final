@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-
-function AcercaDe() {
+function AcercaDePage() {
   return (
     <section className="acerca-de" id="acerca-de">
         <h2>Acerca de nosotros</h2>
@@ -10,13 +8,9 @@ function AcercaDe() {
         <p>
             A través de nuestros cursos, buscamos empoderar a los estudiantes para que puedan enfrentar los desafíos del mundo laboral y contribuir al crecimiento de la sociedad. Nos enorgullece ofrecer un ambiente de aprendizaje inclusivo y de calidad.
         </p>    
-    <p>
-        <Link to="/cursos">Explorar cursos</Link>
-        {" | "} 
-        <Link to="/registro">Registrarme como aprendiz</Link>
-    </p>
     </section>
   );
 }   
 
-export default AcercaDe;
+export default AcercaDePage;
+
