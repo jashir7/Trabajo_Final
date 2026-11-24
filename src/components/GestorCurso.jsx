@@ -1,5 +1,9 @@
 import { useState } from "react";
 import "./tarjetas.css";
+import {
+  eliminarCurso as eliminarCursoApi,
+  guardarCurso,
+} from "../services/cursosApi";
 
 function GestorCurso({ cursos, setCursos }) {
   const [nombre, setNombre] = useState("");
@@ -8,6 +12,8 @@ function GestorCurso({ cursos, setCursos }) {
   const [id, setId] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [indiceCurso, setIndiceCurso] = useState(0);
+  const [guardando, setGuardando] = useState(false);
+  const [eliminandoId, setEliminandoId] = useState(null);
 
   function limpiarFormulario() {
     setNombre("");
@@ -16,7 +22,7 @@ function GestorCurso({ cursos, setCursos }) {
     setId(null);
   }
 
-  function manejarEnvio(evento) {
+  async function manejarEnvio(evento) {
     evento.preventDefault();
 
     if (
@@ -34,22 +40,35 @@ function GestorCurso({ cursos, setCursos }) {
       url: url.trim(),
     };
 
-    if (id !== null) {
-      setCursos((cursosActuales) =>
-        cursosActuales.map((curso) =>
-          curso.id === id ? { ...curso, ...cursoActualizado } : curso,
-        ),
-      );
-      setMensaje("Curso actualizado correctamente.");
-    } else {
-      setCursos((cursosActuales) => [
-        ...cursosActuales,
-        { id: Date.now(), ...cursoActualizado },
-      ]);
-      setMensaje("Curso agregado correctamente.");
-    }
+    setGuardando(true);
+    setMensaje("");
 
-    limpiarFormulario();
+    try {
+      const cursoGuardado = await guardarCurso(cursoActualizado, id);
+
+      if (id !== null) {
+        setCursos((cursosActuales) =>
+          cursosActuales.map((curso) =>
+            curso.id === id ? cursoGuardado : curso,
+          ),
+        );
+        setMensaje("Curso actualizado correctamente.");
+      } else {
+        setCursos((cursosActuales) => [...cursosActuales, cursoGuardado]);
+        setIndiceCurso(0);
+        setMensaje("Curso agregado correctamente.");
+      }
+
+      limpiarFormulario();
+    } catch (error) {
+      setMensaje(
+        error instanceof Error
+          ? error.message
+          : "No se pudo guardar el curso.",
+      );
+    } finally {
+      setGuardando(false);
+    }
   }
 
   function editarCurso(curso) {
@@ -60,7 +79,7 @@ function GestorCurso({ cursos, setCursos }) {
     setMensaje("");
   }
 
-  function eliminarCurso(idEliminar) {
+  async function eliminarCurso(idEliminar) {
     const confirmar = window.confirm(
       "¿Estás seguro de que deseas eliminar este curso?",
     );
@@ -69,22 +88,33 @@ function GestorCurso({ cursos, setCursos }) {
       return;
     }
 
-    const indiceEliminar = cursos.findIndex((curso) => curso.id === idEliminar);
-    setCursos((cursosActuales) =>
-      cursosActuales.filter((curso) => curso.id !== idEliminar),
-    );
+    setEliminandoId(idEliminar);
+    setMensaje("");
 
-    if (indiceEliminar < indiceCurso) {
-      setIndiceCurso(indiceCurso - 1);
-    } else if (indiceEliminar === indiceCurso) {
-      setIndiceCurso(Math.min(indiceCurso, cursos.length - 2));
+    try {
+      await eliminarCursoApi(idEliminar);
+      const cursosRestantes = cursos.filter(
+        (curso) => curso.id !== idEliminar,
+      );
+      setCursos(cursosRestantes);
+      setIndiceCurso((indiceActual) =>
+        Math.min(indiceActual, Math.max(cursosRestantes.length - 1, 0)),
+      );
+
+      if (id === idEliminar) {
+        limpiarFormulario();
+      }
+
+      setMensaje("Curso eliminado correctamente.");
+    } catch (error) {
+      setMensaje(
+        error instanceof Error
+          ? error.message
+          : "No se pudo eliminar el curso.",
+      );
+    } finally {
+      setEliminandoId(null);
     }
-
-    if (id === idEliminar) {
-      limpiarFormulario();
-    }
-
-    setMensaje("Curso eliminado correctamente.");
   }
 
   function cancelarEdicion() {
@@ -96,7 +126,7 @@ function GestorCurso({ cursos, setCursos }) {
     setIndiceCurso((indiceActual) => (indiceActual + 1) % cursos.length);
   }
 
-  const cursoActual = cursos[indiceCurso % cursos.length];
+  const cursoActual = cursos[indiceCurso];
 
   return (
     <div>
@@ -138,8 +168,12 @@ function GestorCurso({ cursos, setCursos }) {
         </div>
 
         <div>
-          <button type="submit">
-            {id !== null ? "Guardar cambios" : "Agregar curso"}
+          <button type="submit" disabled={guardando || eliminandoId !== null}>
+            {guardando
+              ? "Guardando..."
+              : id !== null
+                ? "Guardar cambios"
+                : "Agregar curso"}
           </button>
           {id !== null && (
             <button type="button" onClick={cancelarEdicion}>
@@ -172,9 +206,10 @@ function GestorCurso({ cursos, setCursos }) {
             </button>
             <button
               type="button"
+              disabled={guardando || eliminandoId !== null}
               onClick={() => eliminarCurso(cursoActual.id)}
             >
-              Eliminar
+              {eliminandoId === cursoActual.id ? "Eliminando..." : "Eliminar"}
             </button>
           </article>
         </div>

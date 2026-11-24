@@ -1,6 +1,6 @@
 import GestorCurso from "../components/GestorCurso";
 
-function Cursos({ cursos, setCursos }) {
+function Cursos({ cursos, setCursos, cargando, errorCarga }) {
   return (
     <section id="cursos">
       <h2>Nuestros cursos</h2>
@@ -8,7 +8,12 @@ function Cursos({ cursos, setCursos }) {
         Explora los cursos disponibles y descubre opciones para desarrollar tus
         habilidades.
       </p>
-      <GestorCurso cursos={cursos} setCursos={setCursos} />
+      {errorCarga && <p role="alert">{errorCarga}</p>}
+      {cargando ? (
+        <p role="status">Cargando cursos...</p>
+      ) : (
+        <GestorCurso cursos={cursos} setCursos={setCursos} />
+      )}
     </section>
   );
 }

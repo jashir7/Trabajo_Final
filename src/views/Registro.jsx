@@ -1,13 +1,12 @@
-import PresentacionAprendiz from "../components/Presentacion_aprendiz";
-import RegistroAprendiz from "../components/Registro_aprendiz";
+import GestorRecurso from "../components/GestorRecurso";
+import { recursos } from "../config/recursos";
 
 function Registro() {
   return (
     <section id="registro">
       <h2>Registro de aprendiz</h2>
-      <p>Regístrate y cuéntanos qué curso te interesa.</p>
-      <RegistroAprendiz />
-      <PresentacionAprendiz />
+      <p>Registra y consulta aprendices en el sistema.</p>
+      <GestorRecurso recurso={recursos.aprendices} />
     </section>
   );
 }
