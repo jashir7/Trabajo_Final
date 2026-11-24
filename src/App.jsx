@@ -1,42 +1,41 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Navbar from './components/Navbar';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import Inicio from './views/Inicio';
-import Cursos from './views/Curso';
-import Registro from './views/Registro';
-import AcercaDe from './views/AcercaDe';
-import Administracion from './views/Administracion';
-import GestorRecurso from './components/GestorRecurso';
-import { recursos } from './config/recursos';
-import { listarCursos } from './services/cursosApi';
+import { useEffect, useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import "./styles/App.css";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import Navbar from "./components/layout/Navbar";
+import AcademicoPage from "./features/academico/AcademicoPage";
+import CompetenciasPage from "./features/competencias/CompetenciasPage";
+import CursosPage from "./features/cursos/CursosPage";
+import EvaluacionesPage from "./features/evaluaciones/EvaluacionesPage";
+import FichasPage from "./features/fichas/FichasPage";
+import InstructoresPage from "./features/instructores/InstructoresPage";
+import RegistroPage from "./features/registro/RegistroPage";
+import UsuariosPage from "./features/usuarios/UsuariosPage";
+import AcercaDePage from "./pages/AcercaDePage";
+import Administracion from "./pages/Administracion";
+import InicioPage from "./pages/InicioPage";
+import GestorRecurso from "./components/GestorRecurso";
+import { recursos } from "./config/recursos";
+import { listarCursos } from "./services/cursosApi";
 
 function App() {
   const [cursos, setCursos] = useState([]);
   const [cargandoCursos, setCargandoCursos] = useState(true);
-  const [errorCargaCursos, setErrorCargaCursos] = useState('');
+  const [errorCargaCursos, setErrorCargaCursos] = useState("");
 
   useEffect(() => {
     let activo = true;
 
     listarCursos()
       .then((cursosCargados) => {
-        if (activo) {
-          setCursos(cursosCargados);
-          setErrorCargaCursos('');
-        }
+        if (activo) setCursos(cursosCargados);
       })
       .catch((error) => {
-        if (activo) {
-          setErrorCargaCursos(error.message);
-        }
+        if (activo) setErrorCargaCursos(error.message);
       })
       .finally(() => {
-        if (activo) {
-          setCargandoCursos(false);
-        }
+        if (activo) setCargandoCursos(false);
       });
 
     return () => {
@@ -50,11 +49,11 @@ function App() {
       <Navbar />
       <main>
         <Routes>
-          <Route path="/" element={<Inicio />} />
+          <Route path="/" element={<InicioPage />} />
           <Route
             path="/cursos"
             element={
-              <Cursos
+              <CursosPage
                 cursos={cursos}
                 setCursos={setCursos}
                 cargando={cargandoCursos}
@@ -62,66 +61,31 @@ function App() {
               />
             }
           />
-          <Route path="/registro" element={<Registro />} />
-          <Route path="/acerca-de" element={<AcercaDe />} />
+          <Route path="/registro" element={<RegistroPage />} />
+          <Route path="/acerca-de" element={<AcercaDePage />} />
+          <Route path="/academico" element={<AcademicoPage />} />
           <Route path="/administracion" element={<Administracion />}>
-            <Route
-              index
-              element={<Navigate to="usuarios" replace />}
-            />
+            <Route index element={<Navigate to="usuarios" replace />} />
             <Route
               path="usuarios"
-              element={
-                <GestorRecurso
-                  key={recursos.usuarios.endpoint}
-                  recurso={recursos.usuarios}
-                />
-              }
+              element={<UsuariosPage />}
             />
             <Route
               path="aprendices"
-              element={
-                <GestorRecurso
-                  key={recursos.aprendices.endpoint}
-                  recurso={recursos.aprendices}
-                />
-              }
+              element={<GestorRecurso recurso={recursos.aprendices} />}
             />
             <Route
               path="instructores"
-              element={
-                <GestorRecurso
-                  key={recursos.instructores.endpoint}
-                  recurso={recursos.instructores}
-                />
-              }
+              element={<InstructoresPage />}
             />
-            <Route
-              path="fichas"
-              element={
-                <GestorRecurso
-                  key={recursos.fichas.endpoint}
-                  recurso={recursos.fichas}
-                />
-              }
-            />
+            <Route path="fichas" element={<FichasPage />} />
             <Route
               path="competencias"
-              element={
-                <GestorRecurso
-                  key={recursos.competencias.endpoint}
-                  recurso={recursos.competencias}
-                />
-              }
+              element={<CompetenciasPage />}
             />
             <Route
               path="evaluaciones"
-              element={
-                <GestorRecurso
-                  key={recursos.evaluaciones.endpoint}
-                  recurso={recursos.evaluaciones}
-                />
-              }
+              element={<EvaluacionesPage />}
             />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

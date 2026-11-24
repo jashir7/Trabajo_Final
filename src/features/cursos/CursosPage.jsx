@@ -1,6 +1,6 @@
-import GestorCurso from "../components/GestorCurso";
+import GestorCurso from "./components/GestorCurso";
 
-function Cursos({ cursos, setCursos, cargando, errorCarga }) {
+function CursosPage({ cursos, setCursos, cargando, errorCarga }) {
   return (
     <section id="cursos">
       <h2>Nuestros cursos</h2>
@@ -18,4 +18,4 @@ function Cursos({ cursos, setCursos, cargando, errorCarga }) {
   );
 }
 
-export default Cursos;
+export default CursosPage;

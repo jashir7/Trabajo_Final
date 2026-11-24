@@ -12,7 +12,7 @@ const metricas = [
   ["cursos", "Cursos"],
 ];
 
-function Inicio() {
+function InicioPage() {
   const [resumen, setResumen] = useState(null);
   const [cargandoResumen, setCargandoResumen] = useState(true);
   const [errorResumen, setErrorResumen] = useState("");
@@ -81,9 +81,8 @@ function Inicio() {
           este portal.
         </p>
       </section>
-
     </>
   );
 }
 
-export default Inicio;
+export default InicioPage;

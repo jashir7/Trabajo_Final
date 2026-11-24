@@ -1,9 +1,9 @@
 import { useState } from "react";
-import "./tarjetas.css";
 import {
   eliminarCurso as eliminarCursoApi,
   guardarCurso,
-} from "../services/cursosApi";
+} from "../../../services/cursosApi";
+import "./GestorCurso.css";
 
 function GestorCurso({ cursos, setCursos }) {
   const [nombre, setNombre] = useState("");
@@ -25,11 +25,7 @@ function GestorCurso({ cursos, setCursos }) {
   async function manejarEnvio(evento) {
     evento.preventDefault();
 
-    if (
-      nombre.trim() === "" ||
-      descripcion.trim() === "" ||
-      url.trim() === ""
-    ) {
+    if (!nombre.trim() || !descripcion.trim() || !url.trim()) {
       setMensaje("Completa todos los campos.");
       return;
     }
@@ -47,14 +43,12 @@ function GestorCurso({ cursos, setCursos }) {
       const cursoGuardado = await guardarCurso(cursoActualizado, id);
 
       if (id !== null) {
-        setCursos((cursosActuales) =>
-          cursosActuales.map((curso) =>
-            curso.id === id ? cursoGuardado : curso,
-          ),
+        setCursos((actuales) =>
+          actuales.map((curso) => (curso.id === id ? cursoGuardado : curso)),
         );
         setMensaje("Curso actualizado correctamente.");
       } else {
-        setCursos((cursosActuales) => [...cursosActuales, cursoGuardado]);
+        setCursos((actuales) => [...actuales, cursoGuardado]);
         setIndiceCurso(0);
         setMensaje("Curso agregado correctamente.");
       }
@@ -62,9 +56,7 @@ function GestorCurso({ cursos, setCursos }) {
       limpiarFormulario();
     } catch (error) {
       setMensaje(
-        error instanceof Error
-          ? error.message
-          : "No se pudo guardar el curso.",
+        error instanceof Error ? error.message : "No se pudo guardar el curso.",
       );
     } finally {
       setGuardando(false);
@@ -80,11 +72,9 @@ function GestorCurso({ cursos, setCursos }) {
   }
 
   async function eliminarCurso(idEliminar) {
-    const confirmar = window.confirm(
-      "¿Estás seguro de que deseas eliminar este curso?",
-    );
-
-    if (!confirmar) {
+    if (
+      !window.confirm("¿Estás seguro de que deseas eliminar este curso?")
+    ) {
       return;
     }
 
@@ -97,20 +87,15 @@ function GestorCurso({ cursos, setCursos }) {
         (curso) => curso.id !== idEliminar,
       );
       setCursos(cursosRestantes);
-      setIndiceCurso((indiceActual) =>
-        Math.min(indiceActual, Math.max(cursosRestantes.length - 1, 0)),
+      setIndiceCurso((actual) =>
+        Math.min(actual, Math.max(cursosRestantes.length - 1, 0)),
       );
 
-      if (id === idEliminar) {
-        limpiarFormulario();
-      }
-
+      if (id === idEliminar) limpiarFormulario();
       setMensaje("Curso eliminado correctamente.");
     } catch (error) {
       setMensaje(
-        error instanceof Error
-          ? error.message
-          : "No se pudo eliminar el curso.",
+        error instanceof Error ? error.message : "No se pudo eliminar el curso.",
       );
     } finally {
       setEliminandoId(null);
@@ -123,7 +108,7 @@ function GestorCurso({ cursos, setCursos }) {
   }
 
   function siguienteCurso() {
-    setIndiceCurso((indiceActual) => (indiceActual + 1) % cursos.length);
+    setIndiceCurso((actual) => (actual + 1) % cursos.length);
   }
 
   const cursoActual = cursos[indiceCurso];
@@ -195,22 +180,28 @@ function GestorCurso({ cursos, setCursos }) {
         <p>No hay cursos registrados.</p>
       ) : (
         <div className="url">
-          <article key={cursoActual.id}>
-            {cursoActual.url && (
+          <article>
+            {cursoActual?.url && (
               <img src={cursoActual.url} alt={cursoActual.nombre} />
             )}
-            <h3>{cursoActual.nombre}</h3>
-            <p>{cursoActual.descripcion}</p>
-            <button type="button" onClick={() => editarCurso(cursoActual)}>
-              Editar
-            </button>
-            <button
-              type="button"
-              disabled={guardando || eliminandoId !== null}
-              onClick={() => eliminarCurso(cursoActual.id)}
-            >
-              {eliminandoId === cursoActual.id ? "Eliminando..." : "Eliminar"}
-            </button>
+            <h3>{cursoActual?.nombre}</h3>
+            <p>{cursoActual?.descripcion}</p>
+            {cursoActual && (
+              <>
+                <button type="button" onClick={() => editarCurso(cursoActual)}>
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  disabled={guardando || eliminandoId !== null}
+                  onClick={() => eliminarCurso(cursoActual.id)}
+                >
+                  {eliminandoId === cursoActual.id
+                    ? "Eliminando..."
+                    : "Eliminar"}
+                </button>
+              </>
+            )}
           </article>
         </div>
       )}

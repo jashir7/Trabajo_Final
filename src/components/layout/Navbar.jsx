@@ -13,8 +13,7 @@ function Navbar() {
         <li><NavLink to="/registro">Registro</NavLink></li>
         <li><NavLink to="/administracion">Administración</NavLink></li>
         <li><NavLink to="/acerca-de">Acerca de</NavLink></li>
-      
-
+        <li><NavLink to="/academico">Academico</NavLink></li>
       </ul>
     </nav>
   );

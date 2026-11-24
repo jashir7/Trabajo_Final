@@ -1,7 +1,7 @@
-import GestorRecurso from "../components/GestorRecurso";
-import { recursos } from "../config/recursos";
+import GestorRecurso from "../../components/GestorRecurso";
+import { recursos } from "../../config/recursos";
 
-function Registro() {
+function RegistroPage() {
   return (
     <section id="registro">
       <h2>Registro de aprendiz</h2>
@@ -11,4 +11,4 @@ function Registro() {
   );
 }
 
-export default Registro;
+export default RegistroPage;
