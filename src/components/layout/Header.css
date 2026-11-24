@@ -1,27 +1,51 @@
-.Header{
-    background-color: #00324D;
-    color : #ffffff;
-    padding: 1.2rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.Header {
+  min-height: 118px;
+  box-sizing: border-box;
+  background:
+    linear-gradient(105deg, rgba(8,59,43,.98), rgba(18,56,74,.96));
+  color: #ffffff;
+  padding: 18px max(24px, calc((100% - 1120px) / 2));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
 }
 
-.Title{
-    font: clamp(1rem, 4vw, 3rem);
-    margin: 0;
-    font-weight: 700;
+.Header-brand {
+  min-width: 0;
 }
 
-.Par{
-font-size: clamp(1rem, 2.5vw, 1.25rem);
-margin-top: 0.6rem;
-color: #39A900;
-font-style: italic;
+.Title {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.35rem, 3.4vw, 2.35rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-align: left;
+}
+
+.Par {
+  margin: 8px 0 0;
+  color: #b9e68f;
+  font-size: clamp(.9rem, 2vw, 1.05rem);
+  font-weight: 700;
+  font-style: normal;
 }
 
 .Header-logo {
-  width: 70px;
+  flex: 0 0 auto;
+  width: 82px;
   height: auto;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .12));
 }
 
+@media (max-width: 600px) {
+  .Header {
+    min-height: 96px;
+    padding: 14px 16px;
+  }
+
+  .Header-logo {
+    width: 64px;
+  }
+}
