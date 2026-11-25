@@ -6,7 +6,6 @@ export const recursos = {
       { nombre: "nombres", etiqueta: "Nombres", maxLength: 100 },
       { nombre: "apellidos", etiqueta: "Apellidos", maxLength: 100 },
       { nombre: "correo", etiqueta: "Correo", tipo: "email", maxLength: 180 },
-      { nombre: "rol", etiqueta: "Rol", maxLength: 40 },
     ],
   },
   aprendices: {
