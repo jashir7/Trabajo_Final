@@ -7,15 +7,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.springframework.http.MediaType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.sena.gestionaprendices.model.Curso;
+import com.sena.gestionaprendices.service.CursoService;
 
 @SpringBootTest
 class GestionaprendicesApplicationTests {
@@ -25,6 +34,12 @@ class GestionaprendicesApplicationTests {
 
 	@Autowired
 	private WebApplicationContext context;
+
+	@Value("${app.data-backup.path}")
+	private String backupPath;
+
+	@Autowired
+	private CursoService cursoService;
 
 	private MockMvc mockMvc;
 
@@ -55,7 +70,11 @@ class GestionaprendicesApplicationTests {
 	}
 
 	@Test
-	void persistsCoursesAndKeepsTheApiJsonShape() throws Exception {
+	void loadsJsonDataAndPersistsCoursesInTheBackup() throws Exception {
+		mockMvc.perform(get("/api/evaluaciones"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].fecha").value("2025-01-15"));
+
 		mockMvc.perform(post("/api/cursos")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("""
@@ -72,6 +91,24 @@ class GestionaprendicesApplicationTests {
 		mockMvc.perform(get("/api/cursos"))
 				.andExpect(status().isOk())
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("\"nombre\":\"Curso persistente\"")));
+
+		assertTrue(Files.readString(Path.of(backupPath)).contains("Curso persistente"));
+	}
+
+	@Test
+	void updatesAndDeletesTheJsonBackupWithCourseChanges() throws Exception {
+		Curso created = cursoService.create(new Curso(null, "Curso de respaldo", "Descripción inicial",
+				"https://example.test/inicial"));
+		assertTrue(Files.readString(Path.of(backupPath)).contains("Curso de respaldo"));
+
+		cursoService.update(created.id(), new Curso(null, "Curso actualizado", "Descripción actualizada",
+				"https://example.test/actualizado"));
+		String updatedBackup = Files.readString(Path.of(backupPath));
+		assertTrue(updatedBackup.contains("Curso actualizado"));
+		assertFalse(updatedBackup.contains("Curso de respaldo"));
+
+		cursoService.delete(created.id());
+		assertFalse(Files.readString(Path.of(backupPath)).contains("Curso actualizado"));
 	}
 
 }

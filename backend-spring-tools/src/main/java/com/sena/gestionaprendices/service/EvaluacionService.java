@@ -2,6 +2,7 @@ package com.sena.gestionaprendices.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import com.sena.gestionaprendices.backup.DatabaseJsonStore;
 import com.sena.gestionaprendices.exception.ResourceNotFoundException;
 import com.sena.gestionaprendices.model.Evaluacion;
 import com.sena.gestionaprendices.repository.AprendizRepository;
@@ -13,19 +14,23 @@ public class EvaluacionService {
     private final EvaluacionRepository repository;
     private final AprendizRepository aprendizRepository;
     private final CompetenciaRepository competenciaRepository;
+    private final DatabaseJsonStore jsonStore;
 
     public EvaluacionService(EvaluacionRepository repository, AprendizRepository aprendizRepository,
-                             CompetenciaRepository competenciaRepository) {
+                             CompetenciaRepository competenciaRepository, DatabaseJsonStore jsonStore) {
         this.repository = repository;
         this.aprendizRepository = aprendizRepository;
         this.competenciaRepository = competenciaRepository;
+        this.jsonStore = jsonStore;
     }
 
     public List<Evaluacion> findAll() { return repository.findAll(); }
 
     public Evaluacion create(Evaluacion e) {
         validarReferencias(e);
-        return repository.save(new Evaluacion(null, e.aprendizId(), e.competenciaId(), e.calificacion(), e.fecha()));
+        Evaluacion saved = repository.save(new Evaluacion(null, e.aprendizId(), e.competenciaId(), e.calificacion(), e.fecha()));
+        jsonStore.exportSnapshot();
+        return saved;
     }
 
     public Evaluacion update(Long id, Evaluacion e) {
@@ -36,12 +41,15 @@ public class EvaluacionService {
         existing.setCompetenciaId(e.competenciaId());
         existing.setCalificacion(e.calificacion());
         existing.setFecha(e.fecha());
-        return repository.save(existing);
+        Evaluacion saved = repository.save(existing);
+        jsonStore.exportSnapshot();
+        return saved;
     }
 
     public void delete(Long id) {
         if (!repository.existsById(id)) throw new ResourceNotFoundException("Evaluación no encontrada");
         repository.deleteById(id);
+        jsonStore.exportSnapshot();
     }
 
     private void validarReferencias(Evaluacion e) {

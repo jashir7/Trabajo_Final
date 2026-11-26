@@ -1,0 +1,49 @@
+{
+  "usuarios": [],
+  "aprendices": [
+    {
+      "id": 30,
+      "nombres": "Estudiante",
+      "apellidos": "Prueba",
+      "tipoDocumento": "CC",
+      "numeroDocumento": "TEST-30",
+      "correo": "estudiante@example.test",
+      "fichaId": 10
+    }
+  ],
+  "instructores": [],
+  "fichas": [
+    {
+      "id": 10,
+      "codigo": "TEST-10",
+      "nombre": "Ficha de prueba",
+      "programa": "ADSO",
+      "jornada": "DIURNA"
+    }
+  ],
+  "competencias": [
+    {
+      "id": 20,
+      "codigo": "TEST-20",
+      "nombre": "Competencia de prueba",
+      "descripcion": "Registro sintético para pruebas automatizadas"
+    }
+  ],
+  "evaluaciones": [
+    {
+      "id": 40,
+      "aprendizId": 30,
+      "competenciaId": 20,
+      "calificacion": 4.5,
+      "fecha": "2025-01-15"
+    }
+  ],
+  "cursos": [
+    {
+      "id": 50,
+      "nombre": "Curso de prueba inicial",
+      "descripcion": "Registro sintético para validar la importación JSON",
+      "url": "https://example.test/curso"
+    }
+  ]
+}

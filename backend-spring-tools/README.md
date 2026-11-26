@@ -25,7 +25,18 @@ API REST del sistema de gestión de aprendices. Requiere Java 21 y MySQL 8.
 Desde esta carpeta, ejecuta `.\mvnw.cmd test` para las pruebas y
 `.\mvnw.cmd spring-boot:run` para iniciar la API en el puerto `8080`.
 
-Los registros anteriores vivían solo en memoria; no se migran automáticamente.
-Antes de detener el backend antiguo, exporta los registros que quieras conservar.
+## Respaldo JSON local
+
+El backend mantiene una copia JSON en `data/database.json` dentro de esta carpeta.
+Se actualiza al iniciar con datos ya existentes y después de cada creación,
+edición o eliminación. Si MySQL está vacío, el backend importa este archivo al
+iniciar; no mezcla ni reemplaza una base que ya tenga registros.
+
+El archivo contiene datos del sistema y está excluido de Git para evitar publicar
+información personal. Para usar los registros en otro equipo, copia de forma
+privada `data/database.json` a la carpeta `data` de este proyecto antes de iniciar
+el backend. La base MySQL de ese equipo debe estar vacía para que se importe.
+También se puede cambiar la ubicación con la variable `DATA_BACKUP_PATH`.
+
 `CorsConfig.java` define los orígenes permitidos; si cambia la URL pública del
 frontend, actualiza esa lista y publica el puerto del backend desde VS Code Ports.

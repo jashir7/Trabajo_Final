@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.sena.gestionaprendices.backup.DatabaseJsonStore;
 import com.sena.gestionaprendices.exception.ResourceNotFoundException;
 import com.sena.gestionaprendices.model.Usuario;
 import com.sena.gestionaprendices.repository.UsuarioRepository;
@@ -11,9 +12,11 @@ import com.sena.gestionaprendices.repository.UsuarioRepository;
 @Service
 public class UsuarioService {
     private final UsuarioRepository repository;
+    private final DatabaseJsonStore jsonStore;
 
-    public UsuarioService(UsuarioRepository repository) {
+    public UsuarioService(UsuarioRepository repository, DatabaseJsonStore jsonStore) {
         this.repository = repository;
+        this.jsonStore = jsonStore;
     }
 
     public List<Usuario> findAll() {
@@ -22,7 +25,9 @@ public class UsuarioService {
 
     public Usuario create(Usuario usuario) {
         validarCorreoUnico(usuario.correo(), null);
-        return repository.save(new Usuario(null, usuario.nombres().trim(), usuario.apellidos().trim(), usuario.correo().trim().toLowerCase()));
+        Usuario saved = repository.save(new Usuario(null, usuario.nombres().trim(), usuario.apellidos().trim(), usuario.correo().trim().toLowerCase()));
+        jsonStore.exportSnapshot();
+        return saved;
     }
 
     public Usuario update(Long id, Usuario usuario) {
@@ -32,12 +37,15 @@ public class UsuarioService {
         existing.setNombres(usuario.nombres().trim());
         existing.setApellidos(usuario.apellidos().trim());
         existing.setCorreo(usuario.correo().trim().toLowerCase());
-        return repository.save(existing);
+        Usuario saved = repository.save(existing);
+        jsonStore.exportSnapshot();
+        return saved;
     }
 
     public void delete(Long id) {
         if (!repository.existsById(id)) throw new ResourceNotFoundException("Usuario no encontrado");
         repository.deleteById(id);
+        jsonStore.exportSnapshot();
     }
 
     private void validarCorreoUnico(String correo, Long idIgnorado) {

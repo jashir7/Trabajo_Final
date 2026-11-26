@@ -3,6 +3,7 @@ package com.sena.gestionaprendices.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.sena.gestionaprendices.exception.ResourceNotFoundException;
+import com.sena.gestionaprendices.backup.DatabaseJsonStore;
 import com.sena.gestionaprendices.model.Aprendiz;
 import com.sena.gestionaprendices.repository.AprendizRepository;
 import com.sena.gestionaprendices.repository.FichaRepository;
@@ -11,18 +12,23 @@ import com.sena.gestionaprendices.repository.FichaRepository;
 public class AprendizService {
     private final AprendizRepository repository;
     private final FichaRepository fichaRepository;
+    private final DatabaseJsonStore jsonStore;
 
-    public AprendizService(AprendizRepository repository, FichaRepository fichaRepository) {
+    public AprendizService(
+            AprendizRepository repository, FichaRepository fichaRepository, DatabaseJsonStore jsonStore) {
         this.repository = repository;
         this.fichaRepository = fichaRepository;
+        this.jsonStore = jsonStore;
     }
 
     public List<Aprendiz> findAll() { return repository.findAll(); }
 
     public Aprendiz create(Aprendiz a) {
         validar(a, null);
-        return repository.save(new Aprendiz(null, a.nombres().trim(), a.apellidos().trim(),
+        Aprendiz saved = repository.save(new Aprendiz(null, a.nombres().trim(), a.apellidos().trim(),
                 a.tipoDocumento().trim(), a.numeroDocumento().trim(), a.correo().trim().toLowerCase(), a.fichaId()));
+        jsonStore.exportSnapshot();
+        return saved;
     }
 
     public Aprendiz update(Long id, Aprendiz a) {
@@ -35,12 +41,15 @@ public class AprendizService {
         existing.setNumeroDocumento(a.numeroDocumento().trim());
         existing.setCorreo(a.correo().trim().toLowerCase());
         existing.setFichaId(a.fichaId());
-        return repository.save(existing);
+        Aprendiz saved = repository.save(existing);
+        jsonStore.exportSnapshot();
+        return saved;
     }
 
     public void delete(Long id) {
         if (!repository.existsById(id)) throw new ResourceNotFoundException("Aprendiz no encontrado");
         repository.deleteById(id);
+        jsonStore.exportSnapshot();
     }
 
     private void validar(Aprendiz a, Long idIgnorado) {
