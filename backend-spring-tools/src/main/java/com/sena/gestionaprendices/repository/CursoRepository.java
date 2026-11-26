@@ -1,8 +1,8 @@
 package com.sena.gestionaprendices.repository;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.sena.gestionaprendices.model.Curso;
 
-@Repository
-public class CursoRepository extends InMemoryRepository<Curso> {
+public interface CursoRepository extends JpaRepository<Curso, Long> {
 }

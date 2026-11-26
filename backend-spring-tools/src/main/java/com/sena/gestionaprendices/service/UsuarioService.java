@@ -22,25 +22,29 @@ public class UsuarioService {
 
     public Usuario create(Usuario usuario) {
         validarCorreoUnico(usuario.correo(), null);
-        return repository.saveNew(id -> new Usuario(id, usuario.nombres().trim(), usuario.apellidos().trim(), usuario.correo().trim().toLowerCase()));
+        return repository.save(new Usuario(null, usuario.nombres().trim(), usuario.apellidos().trim(), usuario.correo().trim().toLowerCase()));
     }
 
     public Usuario update(Long id, Usuario usuario) {
         validarCorreoUnico(usuario.correo(), id);
-        return repository.replace(id, existing -> new Usuario(id, usuario.nombres().trim(), usuario.apellidos().trim(), usuario.correo().trim().toLowerCase()))
+        Usuario existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        existing.setNombres(usuario.nombres().trim());
+        existing.setApellidos(usuario.apellidos().trim());
+        existing.setCorreo(usuario.correo().trim().toLowerCase());
+        return repository.save(existing);
     }
 
     public void delete(Long id) {
-        if (!repository.deleteById(id)) {
-            throw new ResourceNotFoundException("Usuario no encontrado");
-        }
+        if (!repository.existsById(id)) throw new ResourceNotFoundException("Usuario no encontrado");
+        repository.deleteById(id);
     }
 
     private void validarCorreoUnico(String correo, Long idIgnorado) {
-        boolean duplicado = repository.findAll().stream()
-                .anyMatch(usuario -> !usuario.id().equals(idIgnorado)
-                        && usuario.correo().equalsIgnoreCase(correo.trim()));
+        String correoNormalizado = correo.trim();
+        boolean duplicado = idIgnorado == null
+                ? repository.existsByCorreoIgnoreCase(correoNormalizado)
+                : repository.existsByCorreoIgnoreCaseAndIdNot(correoNormalizado, idIgnorado);
         if (duplicado) {
             throw new IllegalArgumentException("Ya existe un usuario con ese correo");
         }

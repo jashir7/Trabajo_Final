@@ -21,27 +21,37 @@ public class AprendizService {
 
     public Aprendiz create(Aprendiz a) {
         validar(a, null);
-        return repository.saveNew(id -> new Aprendiz(id, a.nombres().trim(), a.apellidos().trim(),
+        return repository.save(new Aprendiz(null, a.nombres().trim(), a.apellidos().trim(),
                 a.tipoDocumento().trim(), a.numeroDocumento().trim(), a.correo().trim().toLowerCase(), a.fichaId()));
     }
 
     public Aprendiz update(Long id, Aprendiz a) {
         validar(a, id);
-        return repository.replace(id, existing -> new Aprendiz(id, a.nombres().trim(), a.apellidos().trim(),
-                a.tipoDocumento().trim(), a.numeroDocumento().trim(), a.correo().trim().toLowerCase(), a.fichaId()))
+        Aprendiz existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Aprendiz no encontrado"));
+        existing.setNombres(a.nombres().trim());
+        existing.setApellidos(a.apellidos().trim());
+        existing.setTipoDocumento(a.tipoDocumento().trim());
+        existing.setNumeroDocumento(a.numeroDocumento().trim());
+        existing.setCorreo(a.correo().trim().toLowerCase());
+        existing.setFichaId(a.fichaId());
+        return repository.save(existing);
     }
 
     public void delete(Long id) {
-        if (!repository.deleteById(id)) throw new ResourceNotFoundException("Aprendiz no encontrado");
+        if (!repository.existsById(id)) throw new ResourceNotFoundException("Aprendiz no encontrado");
+        repository.deleteById(id);
     }
 
     private void validar(Aprendiz a, Long idIgnorado) {
-        if (repository.findAll().stream().anyMatch(item -> item.numeroDocumento().equalsIgnoreCase(a.numeroDocumento().trim())
-                && !item.id().equals(idIgnorado))) {
+        String numeroDocumento = a.numeroDocumento().trim();
+        boolean duplicado = idIgnorado == null
+                ? repository.existsByNumeroDocumentoIgnoreCase(numeroDocumento)
+                : repository.existsByNumeroDocumentoIgnoreCaseAndIdNot(numeroDocumento, idIgnorado);
+        if (duplicado) {
             throw new IllegalArgumentException("Ya existe un aprendiz con ese número de documento");
         }
-        if (a.fichaId() != null && fichaRepository.findById(a.fichaId()).isEmpty()) {
+        if (a.fichaId() != null && !fichaRepository.existsById(a.fichaId())) {
             throw new IllegalArgumentException("La ficha seleccionada no existe");
         }
     }

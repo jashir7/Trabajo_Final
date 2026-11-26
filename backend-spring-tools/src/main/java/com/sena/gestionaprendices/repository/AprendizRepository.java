@@ -1,8 +1,11 @@
 package com.sena.gestionaprendices.repository;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.sena.gestionaprendices.model.Aprendiz;
 
-@Repository
-public class AprendizRepository extends InMemoryRepository<Aprendiz> {
+public interface AprendizRepository extends JpaRepository<Aprendiz, Long> {
+    boolean existsByNumeroDocumentoIgnoreCase(String numeroDocumento);
+
+    boolean existsByNumeroDocumentoIgnoreCaseAndIdNot(String numeroDocumento, Long id);
 }

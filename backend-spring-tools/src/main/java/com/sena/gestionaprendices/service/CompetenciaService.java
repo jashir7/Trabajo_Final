@@ -13,18 +13,27 @@ public class CompetenciaService {
     public List<Competencia> findAll() { return repository.findAll(); }
     public Competencia create(Competencia c) {
         validarCodigo(c.codigo(), null);
-        return repository.saveNew(id -> new Competencia(id, c.codigo().trim().toUpperCase(), c.nombre().trim(), c.descripcion().trim()));
+        return repository.save(new Competencia(null, c.codigo().trim().toUpperCase(), c.nombre().trim(), c.descripcion().trim()));
     }
     public Competencia update(Long id, Competencia c) {
         validarCodigo(c.codigo(), id);
-        return repository.replace(id, existing -> new Competencia(id, c.codigo().trim().toUpperCase(), c.nombre().trim(), c.descripcion().trim()))
+        Competencia existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Competencia no encontrada"));
+        existing.setCodigo(c.codigo().trim().toUpperCase());
+        existing.setNombre(c.nombre().trim());
+        existing.setDescripcion(c.descripcion().trim());
+        return repository.save(existing);
     }
     public void delete(Long id) {
-        if (!repository.deleteById(id)) throw new ResourceNotFoundException("Competencia no encontrada");
+        if (!repository.existsById(id)) throw new ResourceNotFoundException("Competencia no encontrada");
+        repository.deleteById(id);
     }
     private void validarCodigo(String codigo, Long idIgnorado) {
-        if (repository.findAll().stream().anyMatch(c -> c.codigo().equalsIgnoreCase(codigo.trim()) && !c.id().equals(idIgnorado))) {
+        String codigoNormalizado = codigo.trim();
+        boolean duplicado = idIgnorado == null
+                ? repository.existsByCodigoIgnoreCase(codigoNormalizado)
+                : repository.existsByCodigoIgnoreCaseAndIdNot(codigoNormalizado, idIgnorado);
+        if (duplicado) {
             throw new IllegalArgumentException("Ya existe una competencia con ese código");
         }
     }

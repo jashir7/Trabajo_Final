@@ -13,20 +13,29 @@ public class FichaService {
     public List<Ficha> findAll() { return repository.findAll(); }
     public Ficha create(Ficha f) {
         validarCodigo(f.codigo(), null);
-        return repository.saveNew(id -> new Ficha(id, f.codigo().trim().toUpperCase(), f.nombre().trim(),
+        return repository.save(new Ficha(null, f.codigo().trim().toUpperCase(), f.nombre().trim(),
                 f.programa().trim(), f.jornada().trim()));
     }
     public Ficha update(Long id, Ficha f) {
         validarCodigo(f.codigo(), id);
-        return repository.replace(id, existing -> new Ficha(id, f.codigo().trim().toUpperCase(), f.nombre().trim(),
-                f.programa().trim(), f.jornada().trim()))
+        Ficha existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ficha no encontrada"));
+        existing.setCodigo(f.codigo().trim().toUpperCase());
+        existing.setNombre(f.nombre().trim());
+        existing.setPrograma(f.programa().trim());
+        existing.setJornada(f.jornada().trim());
+        return repository.save(existing);
     }
     public void delete(Long id) {
-        if (!repository.deleteById(id)) throw new ResourceNotFoundException("Ficha no encontrada");
+        if (!repository.existsById(id)) throw new ResourceNotFoundException("Ficha no encontrada");
+        repository.deleteById(id);
     }
     private void validarCodigo(String codigo, Long idIgnorado) {
-        if (repository.findAll().stream().anyMatch(f -> f.codigo().equalsIgnoreCase(codigo.trim()) && !f.id().equals(idIgnorado))) {
+        String codigoNormalizado = codigo.trim();
+        boolean duplicado = idIgnorado == null
+                ? repository.existsByCodigoIgnoreCase(codigoNormalizado)
+                : repository.existsByCodigoIgnoreCaseAndIdNot(codigoNormalizado, idIgnorado);
+        if (duplicado) {
             throw new IllegalArgumentException("Ya existe una ficha con ese código");
         }
     }

@@ -25,24 +25,30 @@ public class EvaluacionService {
 
     public Evaluacion create(Evaluacion e) {
         validarReferencias(e);
-        return repository.saveNew(id -> new Evaluacion(id, e.aprendizId(), e.competenciaId(), e.calificacion(), e.fecha()));
+        return repository.save(new Evaluacion(null, e.aprendizId(), e.competenciaId(), e.calificacion(), e.fecha()));
     }
 
     public Evaluacion update(Long id, Evaluacion e) {
         validarReferencias(e);
-        return repository.replace(id, existing -> new Evaluacion(id, e.aprendizId(), e.competenciaId(), e.calificacion(), e.fecha()))
+        Evaluacion existing = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Evaluación no encontrada"));
+        existing.setAprendizId(e.aprendizId());
+        existing.setCompetenciaId(e.competenciaId());
+        existing.setCalificacion(e.calificacion());
+        existing.setFecha(e.fecha());
+        return repository.save(existing);
     }
 
     public void delete(Long id) {
-        if (!repository.deleteById(id)) throw new ResourceNotFoundException("Evaluación no encontrada");
+        if (!repository.existsById(id)) throw new ResourceNotFoundException("Evaluación no encontrada");
+        repository.deleteById(id);
     }
 
     private void validarReferencias(Evaluacion e) {
-        if (aprendizRepository.findById(e.aprendizId()).isEmpty()) {
+        if (!aprendizRepository.existsById(e.aprendizId())) {
             throw new IllegalArgumentException("El aprendiz seleccionado no existe");
         }
-        if (competenciaRepository.findById(e.competenciaId()).isEmpty()) {
+        if (!competenciaRepository.existsById(e.competenciaId())) {
             throw new IllegalArgumentException("La competencia seleccionada no existe");
         }
     }

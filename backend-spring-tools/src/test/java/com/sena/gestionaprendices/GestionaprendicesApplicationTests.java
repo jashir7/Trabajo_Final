@@ -1,9 +1,14 @@
 package com.sena.gestionaprendices;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.http.MediaType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,26 @@ class GestionaprendicesApplicationTests {
 				.header("Origin", "https://untrusted.example")
 				.header("Access-Control-Request-Method", "GET"))
 				.andExpect(status().isForbidden());
+	}
+
+	@Test
+	void persistsCoursesAndKeepsTheApiJsonShape() throws Exception {
+		mockMvc.perform(post("/api/cursos")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("""
+				        {
+				          "nombre": "Curso persistente",
+				          "descripcion": "Guardado en la base de datos",
+				          "url": "https://example.test/curso"
+				        }
+				        """))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.id").isNumber())
+				.andExpect(jsonPath("$.nombre").value("Curso persistente"));
+
+		mockMvc.perform(get("/api/cursos"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("\"nombre\":\"Curso persistente\"")));
 	}
 
 }
