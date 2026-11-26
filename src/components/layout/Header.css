@@ -1,51 +1,91 @@
+
 .Header {
-  min-height: 118px;
+  min-height: 140px;
   box-sizing: border-box;
-  background:
-    linear-gradient(105deg, rgba(8,59,43,.98), rgba(18,56,74,.96));
+  background: #172c46;
   color: #ffffff;
-  padding: 18px max(24px, calc((100% - 1120px) / 2));
+  padding: 22px clamp(20px, 5vw, 75px);
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  gap: 24px;
+  gap: 22px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid #c5a253;
+}
+
+.Header::after {
+  content: "";
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  top: -205px;
+  right: 10%;
+  border: 1px solid rgba(197, 162, 83, 0.25);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 35px rgba(197, 162, 83, 0.06),
+    0 0 0 70px rgba(197, 162, 83, 0.035);
+  pointer-events: none;
 }
 
 .Header-brand {
   min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.Header-eyebrow {
+  margin: 0 0 5px;
+  color: #d9bd7c;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
 }
 
 .Title {
   margin: 0;
-  color: #fff;
-  font-size: clamp(1.35rem, 3.4vw, 2.35rem);
-  line-height: 1.12;
-  letter-spacing: -0.03em;
+  color: #ffffff;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
   text-align: left;
+  font-weight: 800;
 }
 
 .Par {
   margin: 8px 0 0;
-  color: #b9e68f;
-  font-size: clamp(.9rem, 2vw, 1.05rem);
-  font-weight: 700;
-  font-style: normal;
+  color: #f0eee8;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .Header-logo {
   flex: 0 0 auto;
-  width: 82px;
-  height: auto;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .12));
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 600px) {
   .Header {
-    min-height: 96px;
-    padding: 14px 16px;
+    min-height: 115px;
+    padding: 18px 16px;
+    gap: 14px;
   }
 
   .Header-logo {
-    width: 64px;
+    width: 58px;
+  }
+
+  .Header-eyebrow {
+    font-size: 0.57rem;
+    letter-spacing: 0.08em;
+  }
+
+  .Par {
+    font-size: 0.85rem;
   }
 }

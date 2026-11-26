@@ -1,14 +1,14 @@
 import "./Header.css";
-import SENA_LOGO from "../../assets/SENA_LOGO.webp";
 
 function Header() {
   return (
     <header className="Header">
+      <img src="/ceafi-logo.svg" alt="Logo de CEAFI" className="Header-logo" />
       <div className="Header-brand">
-        <h1 className="Title">Centro Nacional Colombo Alemán</h1>
-        <p className="Par">Formación para el futuro</p>
+        <p className="Header-eyebrow">CENTRO EDUCATIVO DE ALTO NIVEL Y FORMACIÓN INTEGRAL</p>
+        <h1 className="Title">CEAFI</h1>
+        <p className="Par">Formamos talento, construimos futuro.</p>
       </div>
-      <img src={SENA_LOGO} alt="Logo SENA" className="Header-logo" />
     </header>
   );
 }

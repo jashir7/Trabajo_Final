@@ -1,0 +1,37 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E4C477"/>
+      <stop offset="100%" stop-color="#C5A253"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Escudo -->
+  <path d="M60 7 L105 25 L100 76 Q91 99 60 113 Q29 99 20 76 L15 25 Z"
+        fill="none" stroke="url(#gold)" stroke-width="4"/>
+
+  <path d="M60 14 L98 29 L94 74 Q86 94 60 106 Q34 94 26 74 L22 29 Z"
+        fill="#172C46" stroke="#FFFFFF" stroke-width="1.5"/>
+
+  <!-- Birrete -->
+  <path d="M31 35 L60 23 L89 35 L60 47 Z"
+        fill="url(#gold)"/>
+  <path d="M42 40 L42 49 Q60 61 78 49 L78 40"
+        fill="#C5A253"/>
+  <path d="M88 35 L88 52" stroke="#C5A253" stroke-width="2"/>
+  <circle cx="88" cy="54" r="2.5" fill="#C5A253"/>
+
+  <!-- Libro abierto -->
+  <path d="M30 62 Q45 55 60 66 Q75 55 90 62 L90 86 Q75 79 60 90 Q45 79 30 86 Z"
+        fill="#FFFFFF" stroke="#C5A253" stroke-width="2"/>
+  <path d="M60 66 L60 90" stroke="#172C46" stroke-width="2"/>
+  <path d="M36 66 Q47 63 55 69 M36 73 Q47 70 55 76"
+        fill="none" stroke="#C5A253" stroke-width="1.5"/>
+  <path d="M65 69 Q75 63 84 66 M65 76 Q75 70 84 73"
+        fill="none" stroke="#C5A253" stroke-width="1.5"/>
+
+  <!-- Estrella -->
+  <path d="M60 91 L63 97 L70 98 L65 103 L66 109 L60 106 L54 109 L55 103 L50 98 L57 97 Z"
+        fill="url(#gold)"/>
+</svg>

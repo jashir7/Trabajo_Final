@@ -5,7 +5,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-logo">
-        <NavLink to="/">SENA APP</NavLink>
+        <NavLink to="/">CEAFI</NavLink>
       </div>
       <ul className="navbar-links">
         <li><NavLink to="/" end>Inicio</NavLink></li>
@@ -13,7 +13,6 @@ function Navbar() {
         <li><NavLink to="/registro">Registro</NavLink></li>
         <li><NavLink to="/administracion">Administración</NavLink></li>
         <li><NavLink to="/acerca-de">Acerca de</NavLink></li>
-        <li><NavLink to="/academico">Academico</NavLink></li>
       </ul>
     </nav>
   );

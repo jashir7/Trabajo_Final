@@ -1,21 +1,21 @@
 :root {
-  --green-950: #083b2b;
-  --green-800: #0f5a3d;
-  --green-700: #168b49;
-  --green-500: #39a900;
-  --green-100: #eaf6e6;
-  --navy-950: #08212f;
-  --navy-800: #12384a;
-  --text: #475569;
-  --text-h: #102e25;
-  --bg: #f4f7f5;
+  --brand-950: #0b1933;
+  --brand-800: #173c70;
+  --brand-700: #285db1;
+  --brand-500: #13b8c6;
+  --brand-100: #e2f8fa;
+  --navy-950: #0a1830;
+  --navy-800: #17365f;
+  --text: #53647b;
+  --text-h: #132541;
+  --bg: #f3f7fc;
   --surface: #ffffff;
-  --border: #dde7e1;
-  --code-bg: #eef3ef;
-  --accent: #39a900;
-  --accent-bg: rgba(57, 169, 0, 0.1);
-  --accent-border: rgba(57, 169, 0, 0.35);
-  --shadow: 0 14px 40px rgba(21, 54, 43, 0.09);
+  --border: #e1e9f2;
+  --code-bg: #edf3fa;
+  --accent: #13b8c6;
+  --accent-bg: rgba(19, 184, 198, 0.1);
+  --accent-border: rgba(19, 184, 198, 0.35);
+  --shadow: 0 14px 40px rgba(19, 42, 75, 0.09);
 
   --sans: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --heading: "Segoe UI", Inter, Roboto, sans-serif;
@@ -37,7 +37,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 15% 0%, rgba(57, 169, 0, 0.07), transparent 24rem),
+    radial-gradient(circle at 12% 0%, rgba(19, 184, 198, 0.09), transparent 25rem),
+    radial-gradient(circle at 90% 30%, rgba(40, 93, 177, 0.045), transparent 28rem),
     var(--bg);
 }
 

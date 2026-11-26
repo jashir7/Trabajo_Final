@@ -39,16 +39,16 @@ function InicioPage() {
   return (
     <>
       <section className="inicio" id="inicio">
-        <h2>Bienvenidos a nuestro portal de formación</h2>
-        <p>Encuentra cursos y fortalece tus habilidades tecnológicas.</p>
+        <p className="inicio-etiqueta">APRENDIZAJE QUE IMPULSA TU FUTURO</p>
+        <h2>Tu próximo logro comienza con una oportunidad.</h2>
+        <p>Explora programas y desarrolla habilidades para el mundo que viene.</p>
         <p>
-          <Link to="/cursos">Explorar cursos</Link>
-          {" | "}
-          <Link to="/registro">Registrarme como aprendiz</Link>
+          <Link to="/cursos">Descubrir cursos</Link>
+          <Link to="/registro">Inscribirme como aprendiz</Link>
         </p>
       </section>
 
-      <section aria-labelledby="resumen-title">
+      <section className="resumen-sistema" aria-labelledby="resumen-title">
         <h2 id="resumen-title">Resumen del sistema</h2>
         {cargandoResumen ? (
           <p role="status">Cargando resumen...</p>
