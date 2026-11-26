@@ -1,0 +1,32 @@
+package com.sena.gestionaprendices.service;
+
+import java.util.List;
+import org.springframework.stereotype.Service;
+import com.sena.gestionaprendices.exception.ResourceNotFoundException;
+import com.sena.gestionaprendices.model.Competencia;
+import com.sena.gestionaprendices.repository.CompetenciaRepository;
+
+@Service
+public class CompetenciaService {
+    private final CompetenciaRepository repository;
+    public CompetenciaService(CompetenciaRepository repository) { this.repository = repository; }
+    public List<Competencia> findAll() { return repository.findAll(); }
+    public Competencia create(Competencia c) {
+        validarCodigo(c.codigo(), null);
+        return repository.saveNew(id -> new Competencia(id, c.codigo().trim().toUpperCase(), c.nombre().trim(), c.descripcion().trim()));
+    }
+    public Competencia update(Long id, Competencia c) {
+        validarCodigo(c.codigo(), id);
+        return repository.replace(id, existing -> new Competencia(id, c.codigo().trim().toUpperCase(), c.nombre().trim(), c.descripcion().trim()))
+                .orElseThrow(() -> new ResourceNotFoundException("Competencia no encontrada"));
+    }
+    public void delete(Long id) {
+        if (!repository.deleteById(id)) throw new ResourceNotFoundException("Competencia no encontrada");
+    }
+    private void validarCodigo(String codigo, Long idIgnorado) {
+        if (repository.findAll().stream().anyMatch(c -> c.codigo().equalsIgnoreCase(codigo.trim()) && !c.id().equals(idIgnorado))) {
+            throw new IllegalArgumentException("Ya existe una competencia con ese código");
+        }
+    }
+    public long count() { return repository.count(); }
+}
