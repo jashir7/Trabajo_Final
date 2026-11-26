@@ -1,0 +1,41 @@
+{
+  "usuarios": [],
+  "aprendices": [
+    {
+      "id": 1,
+      "nombres": "Aprendiz",
+      "apellidos": "Demostracion",
+      "tipoDocumento": "CC",
+      "numeroDocumento": "DEMO-0001",
+      "correo": "aprendiz.demo@example.test",
+      "fichaId": 1
+    }
+  ],
+  "instructores": [],
+  "fichas": [
+    {
+      "id": 1,
+      "codigo": "DEMO-FICHA-01",
+      "nombre": "Ficha de demostracion",
+      "programa": "Programa de ejemplo",
+      "jornada": "MIXTA"
+    }
+  ],
+  "competencias": [
+    {
+      "id": 1,
+      "codigo": "DEMO-COMP-01",
+      "nombre": "Competencia demostrativa",
+      "descripcion": "Registro ficticio para iniciar el proyecto en otro equipo."
+    }
+  ],
+  "evaluaciones": [],
+  "cursos": [
+    {
+      "id": 1,
+      "nombre": "Curso de demostracion",
+      "descripcion": "Registro ficticio de ejemplo para el proyecto.",
+      "url": "https://example.test/curso"
+    }
+  ]
+}

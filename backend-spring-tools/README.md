@@ -30,13 +30,16 @@ Desde esta carpeta, ejecuta `.\mvnw.cmd test` para las pruebas y
 El backend mantiene una copia JSON en `data/database.json` dentro de esta carpeta.
 Se actualiza al iniciar con datos ya existentes y después de cada creación,
 edición o eliminación. Si MySQL está vacío, el backend importa este archivo al
-iniciar; no mezcla ni reemplaza una base que ya tenga registros.
+iniciar; si no existe, usa el conjunto demostrativo anonimizado de
+`src/main/resources/data/database.json`. No mezcla ni reemplaza una base que ya
+tenga registros.
 
-El archivo contiene datos del sistema y está excluido de Git para evitar publicar
-información personal. Para usar los registros en otro equipo, copia de forma
-privada `data/database.json` a la carpeta `data` de este proyecto antes de iniciar
-el backend. La base MySQL de ese equipo debe estar vacía para que se importe.
-También se puede cambiar la ubicación con la variable `DATA_BACKUP_PATH`.
+La copia local `data/database.json` puede contener datos personales y está
+excluida de Git. Para transferir esos registros reales a otro equipo, copia el
+archivo por un medio privado a la carpeta `data` de este proyecto antes de iniciar
+el backend. Sin esa copia, una base vacía se inicia con los datos ficticios de
+demostración. También se puede cambiar la ubicación con la variable
+`DATA_BACKUP_PATH`.
 
 `CorsConfig.java` define los orígenes permitidos; si cambia la URL pública del
 frontend, actualiza esa lista y publica el puerto del backend desde VS Code Ports.
